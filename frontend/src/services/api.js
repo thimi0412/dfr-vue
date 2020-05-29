@@ -13,12 +13,12 @@ const api = axios.create({
 // 共通前処理
 api.interceptors.request.use(
   function(config) {
-    // メッセージクリア
+    // メッセージをクリア
     store.dispatch("message/clearMessages");
-    // 承認用のトークンがあればリクエストヘッダに乗せる
+    // 認証用トークンがあればリクエストヘッダに乗せる
     const token = localStorage.getItem("access");
     if (token) {
-      config.headers.Authorization = "JWS " + token;
+      config.headers.Authorization = "JWT " + token;
       return config;
     }
     return config;
@@ -44,12 +44,12 @@ api.interceptors.response.use(
       let messages = [].concat.apply([], Object.values(error.response.data));
       store.dispatch("message/setWarningMessages", { messages: messages });
     } else if (status === 401) {
-      // 承認エラー
+      // 認証エラー
       const token = localStorage.getItem("access");
-      if (token) {
+      if (token != null) {
         message = "ログイン有効期限切れ";
       } else {
-        message = "承認エラー";
+        message = "認証エラー";
       }
       store.dispatch("auth/logout");
       store.dispatch("message/setErrorMessage", { message: message });

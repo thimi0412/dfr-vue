@@ -32,36 +32,38 @@
 <script>
 import GlobalHeader from "@/components/GlobalHeader.vue";
 import GlobalMessage from "@/components/GlobalMessage.vue";
-
 export default {
-  components: { GlobalHeader, GlobalMessage },
+  components: {
+    GlobalHeader,
+    GlobalMessage,
+  },
   data() {
     return {
       form: {
         username: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   },
   methods: {
     // ログインボタン押下
     submitLogin: function() {
-      // ログインボタン
+      // ログイン
       this.$store
         .dispatch("auth/login", {
           username: this.form.username,
-          password: this.form.password
+          password: this.form.password,
         })
         .then(() => {
           console.log("Login succeeded.");
           this.$store.dispatch("message/setInfoMessage", {
-            message: "ログインしました。"
+            message: "ログインしました。",
           });
-          // クエリの文字列に「next」がなければホーム画面へ
-          const next = this.$router.query.next || "/";
+          // クエリ文字列に「next」がなければ、ホーム画面へ
+          const next = this.$route.query.next || "/";
           this.$router.replace(next);
         });
-    }
-  }
+    },
+  },
 };
 </script>

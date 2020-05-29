@@ -8,7 +8,7 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: "history",
-  // ログインが必要な画面には「requiresAuth」フラグをつける
+  // ログインが必要な画面には「requiresAuth」フラグを付けておく
   routes: [
     { path: "/", component: HomePage, meta: { requiresAuth: true } },
     { path: "/login", component: LoginPage },
@@ -17,7 +17,7 @@ const router = new VueRouter({
 });
 
 /**
- * Routerによって画面遷移する際に毎回実行する
+ * Routerによって画面遷移する際に毎回実行される
  */
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.getters["auth/isLoggedIn"];
@@ -25,23 +25,24 @@ router.beforeEach((to, from, next) => {
   console.log("to.path=", to.path);
   console.log("isLoggedIn=", isLoggedIn);
 
-  // ログインが必要な画面に遷移使用とした場合
+  // ログインが必要な画面に遷移しようとした場合
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    // ログインしている場合
+    // ログインしている状態の場合
     if (isLoggedIn) {
       console.log("User is already logged in. So, free to next.");
       next();
-      // ログインしていない場合
+
+      // ログインしていない状態の場合
     } else {
-      // まだ承認用のトークンが残っていればユーザー情報再取得
-      if (token !== null) {
-        console.log("User is not Logged In. Try to reload again.");
+      // まだ認証用トークンが残っていればユーザー情報を再取得
+      if (token != null) {
+        console.log("User is not logged in. Trying to reload again.");
 
         store
           .dispatch("auth/reload")
           .then(() => {
             // 再取得できたらそのまま次へ
-            console.log("Succeeded to reaload. So, free to next.");
+            console.log("Succeeded to reload. So, free to next.");
             next();
           })
           .catch(() => {
@@ -49,8 +50,8 @@ router.beforeEach((to, from, next) => {
             forceToLoginPage(to, from, next);
           });
       } else {
-        // ログインが不要な画面であればそのまま次へ
-        console.log("Go to public page.");
+        // 認証用トークンが無い場合は、ログイン画面へ
+        forceToLoginPage(to, from, next);
       }
     }
   } else {
