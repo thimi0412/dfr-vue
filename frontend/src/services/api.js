@@ -14,7 +14,7 @@ const api = axios.create({
 api.interceptors.request.use(
   function(config) {
     // メッセージクリア
-    stoer.dispatch("message/clearMessages");
+    store.dispatch("message/clearMessages");
     // 承認用のトークンがあればリクエストヘッダに乗せる
     const token = localStorage.getItem("access");
     if (token) {

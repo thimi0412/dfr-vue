@@ -1,17 +1,17 @@
 import Vue from "vue";
-import VueRoute from "vue-route";
+import VueRouter from "vue-router";
 import HomePage from "@/pages/HomePage";
 import LoginPage from "@/pages/LoginPage";
 import store from "@/store";
 
-Vue.use(VueRoute);
+Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: "history",
   // ログインが必要な画面には「requiresAuth」フラグをつける
   routes: [
     { path: "/", component: HomePage, meta: { requiresAuth: true } },
-    { path: "/login", component: Login },
+    { path: "/login", component: LoginPage },
     { path: "*", redirect: "/" },
   ],
 });
@@ -21,9 +21,9 @@ const router = new VueRouter({
  */
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.getters["auth/isLoggedIn"];
-  const token = localStorage.getItem("accsess");
+  const token = localStorage.getItem("access");
   console.log("to.path=", to.path);
-  console.log("isLoggedIn", isLoggedIn);
+  console.log("isLoggedIn=", isLoggedIn);
 
   // ログインが必要な画面に遷移使用とした場合
   if (to.matched.some((record) => record.meta.requiresAuth)) {

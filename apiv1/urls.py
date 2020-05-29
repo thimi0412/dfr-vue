@@ -3,10 +3,10 @@ from rest_framework import routers
 
 from . import views
 
-routers = routers.DefaultRouter()
-routers.register('book', views.BookViewSet)
+router = routers.DefaultRouter()
+router.register('books', views.BookViewSet)
 
 app_name = 'apiv1'
 urlpatterns = [
-    path('', include(routers.urls))
+    path('', include(router.urls)),
 ]
